@@ -12,6 +12,6 @@ client = pytumblr.TumblrRestClient(
     oasecret
 )
 
-print client.followers('thetinywordnerd')
+print client.followers('thetinywordnerd') # This is one of my friends on tumblr and in real life, so I used her as a test.
 
 # Note: Tumblr is not a good source for us, so I am going to abandon this.

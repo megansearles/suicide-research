@@ -28,9 +28,7 @@ else:
 	for page in tweepy.Cursor(api.followers_ids, screen_name=init_screen).pages():
 		init_list.extend(page)
 		time.sleep(60)
-		
-print init_list
-		
+			
 mutual_list = []
 for secondary in init_list:
 	secondary_list = []
@@ -45,4 +43,3 @@ for secondary in init_list:
 	if init_id in secondary_list:
 		mutual_list.append(secondary)
 		
-print mutual_list
