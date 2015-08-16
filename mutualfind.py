@@ -11,7 +11,7 @@ auth.set_access_token(atoken,asecret)
 
 api = tweepy.API(auth)
 
-init_user = api.get_user('thesquareroots5')
+init_user = api.get_user('lothlorienluna')
 init_screen = str(init_user.screen_name)
 init_id = init_user.id
 
@@ -33,6 +33,7 @@ mutual_list = []
 for secondary in init_list:
 	secondary_list = []
 	if init_friend_count < init_follower_count:
+		# Rate limit exceeded with call below
 		for page in tweepy.Cursor(api.friends_ids, user_id=secondary).pages():
 			secondary_list.extend(page)
 			time.sleep(60)
