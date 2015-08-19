@@ -1,3 +1,5 @@
+# Apparently exists_friendship is not a thing anymore, so this method doesn't work
+
 import tweepy
 import time
 
@@ -28,18 +30,17 @@ else:
 	for page in tweepy.Cursor(api.followers_ids, screen_name=init_screen).pages():
 		init_list.extend(page)
 		time.sleep(60)
-			
+
 mutual_list = []
-for secondary in init_list:
-	secondary_list = []
-	if init_friend_count < init_follower_count:
-		for page in tweepy.Cursor(api.friends_ids, user_id=secondary).pages():
-			secondary_list.extend(page)
-			time.sleep(60)
-	else:
-		for page in tweepy.Cursor(api.followers_ids, user_id=secondary).pages():
-			secondary_list.extend(page)
-			time.sleep(60)
-	if init_id in secondary_list:
-		mutual_list.append(secondary)
-		
+if init_friend_count < init_follower_count: 
+	#Then init_list is full of people init_id follows, so init_id will be user_b
+	for secondary in init_list:
+		if api.exists_friendship(secondary,init_id):
+			mutual_list.append(secondary)
+else:
+	#Then init_list is full of people who follow init_id, so init_id will be user_a
+	for secondary in init_list:
+		if api.exists_friendship(init_id,secondary):
+			mutual_list.append(secondary)
+
+print mutual_list

@@ -17,11 +17,10 @@ import time
 # Note: not totally effective, still keeps some "in_reply_to_whatever=None"s
 # Should not be a huge problem since we weed out not mutuals later, and None falls under that category
 def pullReplies(user_in, list_in):
-	user = mutualfind.api.get_user(user_in)
-	recent_tweet = mutualfind.api.user_timeline(user_id=user.id, count=1)
+	recent_tweet = mutualfind.api.user_timeline(user_id=user_in, count=1)
 	max = recent_tweet[0].id 
 	for x in xrange(3):
-		new_tweets = mutualfind.api.user_timeline(user_id=user.id, count=200, max_id=max)
+		new_tweets = mutualfind.api.user_timeline(user_id=user_in, count=200, max_id=max)
 		list_in.extend(new_tweets)
 		max = list_in[-1].id - 1
 		time.sleep(5)
