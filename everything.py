@@ -20,12 +20,13 @@ api = tweepy.API(auth)
 #		Set a minimum for something to gauge interaction level
 #		Maybe look at faves and RTs?
 
-init_user = api.get_user('TweetThis3000')
+init_user = api.get_user('christieclimb') # Get main user's information. Could probably be made to prompt for a user and then run program
 init_id = init_user.id
 
 init_follower_count = init_user.followers_count
 init_friend_count = init_user.friends_count
 
+# Creates a list of followers or friends of a user, depending on which has less items
 def buildList(list_in,id_in):
 	if init_friend_count < init_follower_count:
 		for page in tweepy.Cursor(api.friends_ids, user_id=id_in).pages():
@@ -36,6 +37,7 @@ def buildList(list_in,id_in):
 			list_in.extend(page)
 			time.sleep(60)
 
+# Gets 600 most recent tweets, then removes all but the replies
 def pullReplies(user_in, list_in):
 	recent_tweet = api.user_timeline(user_id=user_in, count=1)
 	max = recent_tweet[0].id 
@@ -45,11 +47,12 @@ def pullReplies(user_in, list_in):
 		max = list_in[-1].id - 1
 		time.sleep(5)
 	for tweet in list_in:
-		if tweet.in_reply_to_user_id is None:
+		if tweet.in_reply_to_user_id is None: # Note: Doesn't remove all Nones, but can be filtered out later by other means
 			list_in.remove(tweet)
 	
 init_list = []
 buildList(init_list, init_id)
+# Removes protected users, because can't access their followers/following
 for item in init_list:
 	user = api.get_user(user_id=item)
 	if user.protected is True:
@@ -57,6 +60,7 @@ for item in init_list:
 	time.sleep(5)
 			
 mutual_list = []
+#Builds list of each follower/friend's following/friends to see if main user is in the list
 for secondary in init_list:
 	secondary_list = []
 	buildList(secondary_list, secondary)
@@ -68,8 +72,11 @@ pullReplies(init_id, init_tweets)
 
 mutual_replies = []
 for tweet in init_tweets:
-	if tweet.in_reply_to_user_id in mutual_list and tweet.in_reply_to_user_id not in mutual_replies:
+	# If the reply is to a mutual and is not already in the list, then it is added to the list of mutuals the main user replies to
+	# Note: Change screen_name to user_id later - this was just to test
+	if tweet.in_reply_to_user_id in mutual_list and tweet.in_reply_to_screen_name not in mutual_replies:
 		mutual_replies.append(tweet.in_reply_to_screen_name)
 
+# Gives feedback as to whether the program worked
 for item in mutual_replies:
 	print str(item)
