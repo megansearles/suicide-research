@@ -22,7 +22,7 @@ api = tweepy.API(auth)
 #		Add features to array
 #		Write array to a csv file so we can analyze the data
 	
-init_user = api.get_user('ashlaraee002') 
+init_user = api.get_user('whitnolden') 
 init_id = init_user.id
 
 init_follower_count = init_user.followers_count
@@ -49,6 +49,19 @@ def pullReplies(user_in, list_in):
 	for tweet in list_in:
 		if tweet.in_reply_to_user_id is None: 
 			list_in.remove(tweet)
+
+# Calculates feature, and adds it to the array			
+def addPercentage(my_array,mutual_list,list_in,column):
+	total = len(list_in)
+	for mutual in mutual_list:
+		occurences = list_in.count(mutual)
+		if total != 0:
+			percentage = occurences/float(total)
+		else: 
+			percentage = 0
+		for i in xrange(len(mutual_list)):
+			if my_array[i,0] == mutual:
+				my_array[i,column] = percentage
 	
 init_list = []
 buildList(init_list, init_id)
@@ -69,6 +82,7 @@ for secondary in init_list:
 # Need to rename it with something more descriptive
 my_array = numpy.zeros((len(mutual_list),5))
 
+# Adds every mutual to the array
 for i in xrange(len(mutual_list)):
 	my_array[i,0] = mutual_list[i]
 		
@@ -77,31 +91,44 @@ pullReplies(init_id, init_tweets)
 
 init_replies = []
 for tweet in init_tweets:
-	if tweet.in_reply_to_user_id in mutual_list and tweet.in_reply_to_user_id not in init_replies:
+	if tweet.in_reply_to_user_id in mutual_list: #and tweet.in_reply_to_user_id not in init_replies:
 		init_replies.append(tweet.in_reply_to_user_id)
+
+# Gets rid of Nones
+for item in init_replies:
+	if item is None:
+		init_replies.remove(item)
+		
+addPercentage(my_array,mutual_list,init_replies,1)
 	
 mutual_replies = []
 placeholder = [init_id]
-for secondary in init_replies:
+for secondary in mutual_list:
 	sec_tweets = []
 	pullReplies(secondary, sec_tweets)
 	for tweet in sec_tweets:
-		if tweet.in_reply_to_user_id in placeholder and secondary not in mutual_replies:
+		if tweet.in_reply_to_user_id in placeholder: #and secondary not in mutual_replies:
 			mutual_replies.append(secondary)
+			
+addPercentage(my_array,mutual_list,mutual_replies,2)
 	
 init_faves = api.favorites(user_id=init_id,count=200)
 time.sleep(60)
 init_fave_ids = []	
 for fave in init_faves:
-	if fave.user.id in mutual_list and fave.user.id not in init_fave_ids:
+	if fave.user.id in mutual_list: #and fave.user.id not in init_fave_ids:
 		init_fave_ids.append(fave.user.id)
+		
+addPercentage(my_array,mutual_list,init_fave_ids,3)
 
 mutual_fave_ids = []
-for secondary in init_fave_ids:
+for secondary in mutual_list:
 	sec_faves = api.favorites(user_id=secondary,count=200)
 	for fave in sec_faves:
-		if fave.user.id in placeholder and secondary not in mutual_fave_ids:
+		if fave.user.id in placeholder: #and secondary not in mutual_fave_ids:
 			mutual_fave_ids.append(secondary)
 	time.sleep(60)
+	
+addPercentage(my_array,mutual_list,mutual_fave_ids,4)
 
-
+numpy.savetxt('whitnolden.csv',my_array,delimiter=',',newline='\n')
