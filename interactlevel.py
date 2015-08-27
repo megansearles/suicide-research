@@ -22,7 +22,7 @@ api = tweepy.API(auth)
 #		Add features to array
 #		Write array to a csv file so we can analyze the data
 	
-init_user = api.get_user('whitnolden') 
+init_user = api.get_user('thesquareroots5') 
 init_id = init_user.id
 
 init_follower_count = init_user.followers_count
@@ -55,7 +55,7 @@ def addPercentage(my_array,mutual_list,list_in,column):
 		if total != 0:
 			percentage = occurences/float(total)
 		else: 
-			percentage = 0
+			percentage = 0sudo apt-get install python-setuptools
 		for i in xrange(len(mutual_list)):
 			if my_array[i,0] == mutual:
 				my_array[i,column] = percentage
@@ -126,4 +126,4 @@ addPercentage(my_array,mutual_list,init_fave_ids,3)
 	
 addPercentage(my_array,mutual_list,mutual_fave_ids,4)
 
-numpy.savetxt('whitnolden2.csv',my_array,delimiter=',',newline='\n')
+numpy.savetxt('thesquareroots5.csv',my_array,delimiter=',',newline='\n')
