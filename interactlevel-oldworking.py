@@ -22,7 +22,7 @@ api = tweepy.API(auth)
 #		Add features to array
 #		Write array to a csv file so we can analyze the data
 	
-init_user = api.get_user('thesquareroots5') 
+init_user = api.get_user('lothlorienluna') 
 init_id = init_user.id
 
 init_follower_count = init_user.followers_count
@@ -40,6 +40,7 @@ def buildList(list_in,id_in):
 
 def pullReplies(user_in, list_in):
 	recent_tweet = api.user_timeline(user_id=user_in, count=1)
+	time.sleep(5)
 	max = recent_tweet[0].id 
 	for x in xrange(3):
 		new_tweets = api.user_timeline(user_id=user_in, count=200, max_id=max)
@@ -131,4 +132,4 @@ for secondary in mutual_list:
 	
 addPercentage(my_array,mutual_list,mutual_fave_ids,4)
 
-numpy.savetxt('thesquareroots5.csv',my_array,delimiter=',',newline='\n')
+numpy.savetxt('lothlorienluna.csv',my_array,delimiter=',',newline='\n')
