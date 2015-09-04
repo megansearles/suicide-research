@@ -26,7 +26,9 @@ api = tweepy.API(auth)
 #		Add features to array
 #		Write array to a csv file so we can analyze the data
 	
-init_user = api.get_user('lothlorienluna') # Get main user's information. Could probably be made to prompt for a user and then run program
+init_screen = raw_input("Which user do you want to look at? ")
+	
+init_user = api.get_user(init_screen) 
 init_id = init_user.id
 
 init_follower_count = init_user.followers_count
@@ -166,4 +168,5 @@ addPercentage(my_array,mutual_list,mutual_fave_ids,4)
 print "check 6"
 print time.clock()
 
-numpy.savetxt('lothlorienluna.csv',my_array,delimiter=',',newline='\n')
+numpy.savetxt('C:/Users/Megan/Desktop/suicide-research/output-files/%s.csv' % init_screen,my_array,delimiter=',',newline='\n')
+# You can change the file path to fit your needs
