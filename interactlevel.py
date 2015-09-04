@@ -1,14 +1,17 @@
 import tweepy
 import time
 import numpy
-# Note: comments on content that was in checkinteract are in that program
+import os
+import sys
+sys.path.append('..')
+import m_auth	# This is the file with my authentication info. You can just fill in your own
 
-time.clock()
+time.clock() # Starts timer for testing purposes
 
-ckey = '96OUx6IbHfzuJyaazJmWRxw9a'
-csecret = 'QB8LoQt5j16WI3O8PizftTCAWmdWEeWrtWInC7b2HqsYrCoEAh'
-atoken = '793827708-95t9kQbxwXHSCvNq8tomLa0pOyE2JEtGfWxMlVcM'
-asecret = 'VQ66vgFL5lQURvEc5WCJ7tafxAD1wCxvzXwgRWtRHZa5b'
+ckey = m_auth.ckey
+csecret = m_auth.csecret
+atoken = m_auth.atoken
+asecret = m_auth.asecret
 
 auth = tweepy.OAuthHandler(ckey,csecret)
 auth.set_access_token(atoken,asecret)
@@ -23,7 +26,7 @@ api = tweepy.API(auth)
 #		Add features to array
 #		Write array to a csv file so we can analyze the data
 	
-init_user = api.get_user('dgmllr') # Get main user's information. Could probably be made to prompt for a user and then run program
+init_user = api.get_user('lothlorienluna') # Get main user's information. Could probably be made to prompt for a user and then run program
 init_id = init_user.id
 
 init_follower_count = init_user.followers_count
@@ -121,8 +124,6 @@ for item in init_replies:
 for item in to_remove2:
 	init_replies.remove(item)
 	
-print init_replies
-	
 addPercentage(my_array,mutual_list,init_replies,1)
 
 # Gets replies from mutuals to main user, adds those mutuals to list
@@ -165,4 +166,4 @@ addPercentage(my_array,mutual_list,mutual_fave_ids,4)
 print "check 6"
 print time.clock()
 
-numpy.savetxt('dgmllr.csv',my_array,delimiter=',',newline='\n')
+numpy.savetxt('lothlorienluna.csv',my_array,delimiter=',',newline='\n')
