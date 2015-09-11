@@ -1,7 +1,6 @@
 import tweepy
 import time
 import numpy
-import os
 import sys
 sys.path.append('..')
 import m_auth	# This is the file with my authentication info. You can just fill in your own
@@ -49,15 +48,16 @@ def buildList(list_in,id_in):
 def pullReplies(user_in, list_in):
 	recent_tweet = api.user_timeline(user_id=user_in, count=1)
 	time.sleep(5)
-	max = recent_tweet[0].id 
-	for x in xrange(3):
-		new_tweets = api.user_timeline(user_id=user_in, count=200, max_id=max)
-		list_in.extend(new_tweets)
-		max = list_in[-1].id - 1
-		time.sleep(5)
-	for tweet in list_in:
-		if tweet.in_reply_to_user_id is None: 
-			list_in.remove(tweet)
+	if recent_tweet != []:
+		max = recent_tweet[0].id 
+		for x in xrange(3):
+			new_tweets = api.user_timeline(user_id=user_in, count=200, max_id=max)
+			list_in.extend(new_tweets)
+			max = list_in[-1].id - 1
+			time.sleep(5)
+		for tweet in list_in:
+			if tweet.in_reply_to_user_id is None: 
+				list_in.remove(tweet)
 
 # Calculates feature, and adds it to the array			
 def addPercentage(my_array,mutual_list,list_in,column):
