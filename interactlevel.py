@@ -50,11 +50,11 @@ def pullReplies(user_in, list_in):
 	recent_tweet = api.user_timeline(user_id=user_in, count=1)
 	time.sleep(5)
 	if recent_tweet != []:
-		max = recent_tweet[0].id 
+		maxtweet = recent_tweet[0].id 
 		for x in xrange(3):
-			new_tweets = api.user_timeline(user_id=user_in, count=200, max_id=max)
+			new_tweets = api.user_timeline(user_id=user_in, count=200, max_id=maxtweet)
 			list_in.extend(new_tweets)
-			max = list_in[-1].id - 1
+			maxtweet = list_in[-1].id - 1
 			time.sleep(5)
 		for tweet in list_in:
 			if tweet.in_reply_to_user_id is None: 
@@ -117,7 +117,7 @@ for tweet in init_tweets:
 		init_replies.append(tweet.in_reply_to_user_id)
 
 print "check 3"	
-print time.clock()	
+print time.clock()
 		
 # Gets rid of Nones
 to_remove2 = []
