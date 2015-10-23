@@ -18,17 +18,17 @@ api = tweepy.API(auth)
 #To-Do: Get list of features for each user in sample_users
 #       Features include:
 #        From User objects:
-#       `   Number of followers
-#           Number of following
-#           Total number of favorites
-#           Total number of tweets
+#          Number of followers
+#          Number of following
+#          Total number of favorites
+#          Total number of tweets
 #        From Tweet objects:
-#           Percentage of last 200 tweets that are replies
-#           Percentage of last 200 tweets that are retweets
-#           Percentage of last 200 tweets that have been favorited by others
-#           Percentage of last 200 tweets that have been retweeted by others
-#           Average number of favorites for last 200 tweets
-#           Average number of retweets for last 200 tweets
+#          Percentage of last 200 tweets that are replies
+#          Percentage of last 200 tweets that are retweets
+#          Percentage of last 200 tweets that have been favorited by others
+#          Percentage of last 200 tweets that have been retweeted by others
+#          Average number of favorites for last 200 tweets
+#          Average number of retweets for last 200 tweets
 
 sample_users = numpy.loadtxt('sample_users.csv', delimiter=',')
 
@@ -43,6 +43,6 @@ for arr in split_array:
     
 for user in sample_users:
     tweets = api.user_timeline(id = user, count = 200)
-    # Fill in with actions to add features from Tweets objects
+    # Fill in with actions to add features from Tweet objects
     time.sleep(5)
 

@@ -24,7 +24,7 @@ api = tweepy.API(auth)
 
 sample_users = []
 
-# Gets 260 users who are followed by the input user, adds to full list of sample users
+# Gets 257 users who are followed by the input user, adds to full list of sample users
 def pullFriends(sn_in):
 	newfriends = api.friends_ids(screen_name = sn_in, count = 257)
 	sample_users.extend(newfriends)
