@@ -2,6 +2,8 @@ SET NAMES utf8mb4;
 
 CREATE DATABASE prescription_drugs CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
+use prescription_drugs
+
 CREATE TABLE geo (
   tweet_id VARCHAR(191),
   coord_type VARCHAR(191),
