@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import json
-import mysql.connector
+import MySQLdb
 import sys
 sys.path.append('../..')
 import auth
@@ -12,9 +12,10 @@ host = auth.host
 password = auth.password
 database = auth.database
 
-cnx = mysql.connector.connect(user=user, host=host, password=password, database=database, use_unicode=True)
+cnx = MySQLdb.connect(user=user, host=host, passwd=password, db=database, use_unicode=True)
 cursor = cnx.cursor()
 
+cnx.set_character_set('utf8mb4')
 cursor.execute("SET NAMES utf8mb4")
 cursor.execute("SET CHARACTER SET utf8mb4")
 cursor.execute("SET character_set_connection=utf8mb4")
@@ -48,6 +49,10 @@ for n in range(file_count):
             created_at = data["created_at"]
             user_id = data["user"]["id"]
             retweet_count = data["retweet_count"]
+
+            f = open('last_id', 'w')
+            f.write(str(tweet_id))
+            f.close()
 
             try:
                 in_reply_to_screen_name = data["in_reply_to_screen_name"]
