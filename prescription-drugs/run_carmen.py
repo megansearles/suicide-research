@@ -1,5 +1,6 @@
 import json
 import carmen
+import glob
 
 file_number = 0
 file_name = "file-" + str(file_number) + ".txt"
@@ -9,14 +10,15 @@ for n in range(file_count):
     row_number = 1
     with open(file_name) as data_file:
         for line in data_file:
-            data = json.loads(line)
+            tweet = json.loads(line)
             resolver = carmen.get_resolver()
-            resolver.load_locations
+            resolver.load_locations()
             location = resolver.resolve_tweet(tweet)
 
-            f = open('carmenized','a')
-            f.write(location + '\n')
-            f.close()
+            if location is not None:
+                f = open('carmenized.txt','a')
+                f.write(str(location) + '\n')
+                f.close()
 
             f = open('row_number','w')
             f.write(str(row_number))
@@ -27,4 +29,4 @@ for n in range(file_count):
         f.write(str(file_number))
         f.close()
         file_number += 1
-        file_name = 'file' + str(file_number) + '.txt'
+        file_name = 'file-' + str(file_number) + '.txt'
