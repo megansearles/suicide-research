@@ -21,12 +21,12 @@ cursor.execute("SET CHARACTER SET utf8mb4")
 cursor.execute("SET character_set_connection=utf8mb4")
 
 add_geo = ("INSERT INTO geo "
-           "(tweet_id, coord_type, longitude, latitude) "
-           "VALUES (%s, %s, %s, %s)")
+           "(tweet_id, longitude, latitude, country, state, county, city) "
+           "VALUES (%s, %s, %s, %s, %s, %s, %s)")
 
 add_tweet = ("INSERT INTO tweets "
-             "(tweet_id, tweet_id_str, text, in_reply_to_screen_name, in_reply_to_status_id, in_reply_to_status_id_str, in_reply_to_user_id, in_reply_to_user_id_str, retweet_count, favorite_count, created_at, place_id, user_id) "
-             "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)")
+             "(tweet_id, tweet_id_str, text, in_reply_to_screen_name, in_reply_to_status_id, in_reply_to_status_id_str, in_reply_to_user_id, in_reply_to_user_id_str, retweet_count, favorite_count, created_at, user_id) "
+             "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)")
 
 add_user = ("INSERT INTO users "
             "(user_id, user_id_str, protected, screen_name, verified, statuses_count, description, location) "
@@ -34,7 +34,7 @@ add_user = ("INSERT INTO users "
 
 unique_users = []
 file_number = 0
-file_name = "file-" + str(file_number) + ".txt"
+file_name = "carmen-" + str(file_number) + ".txt"
 file_count = len(glob.glob("file-*.txt"))
 
 for n in range(file_count):
@@ -42,17 +42,24 @@ for n in range(file_count):
     with open(file_name) as data_file:
         for line in data_file:    
             data = json.loads(line)
-
-            tweet_id = data["id"]
-            tweet_id_str = data["id_str"]
-            text = data["text"]
+            try:
+                tweet_id = data["id"]
+                tweet_id_str = data["id_str"]
+            except KeyError:
+                continue
+            try:
+                text = data["text"]
+            except KeyError:
+                continue
             created_at = data["created_at"]
-            user_id = data["user"]["id"]
-            retweet_count = data["retweet_count"]
-
-            f = open('last_id', 'w')
-            f.write(str(tweet_id))
-            f.close()
+            try:
+                user_id = data["user"]["id"]
+            except KeyError:
+                continue
+            try:
+                retweet_count = data["retweet_count"]
+            except KeyError:
+                retweet_count = 0
 
             try:
                 in_reply_to_screen_name = data["in_reply_to_screen_name"]
@@ -71,30 +78,46 @@ for n in range(file_count):
             except KeyError:
                 favorite_count = "Null"
             try:
-                longitude = data["coordinates"]["coordinates"][0]
-                latitude = data["coordinates"]["coordinates"][1]
-                coord_type = data["coordinates"]["type"]
-            except TypeError:
+                longitude = data["location"]["longitude"]
+                latitude = data["location"]["latitude"]
+            except KeyError:
                 longitude = 0
                 latitude = 0
-                coord_type = "Null"
             try:
-                place_id = data["place"]["id"]
-            except TypeError:
-                place_id = "Null"
+                country = data["location"]["country"]
+            except KeyError:
+                country = "Null"
+            try:
+                state = data["location"]["state"]
+            except KeyError:
+                state = "Null"
+            try:
+                county = data["location"]["county"]
+            except KeyError:
+                county = "Null"
+            try:
+                city = data["location"]["city"]
+            except KeyError:
+                city = "Null"
 
-            if coord_type != "Null" or longitude != 0 or latitude != 0:
-                data_geo = (tweet_id, coord_type, longitude, latitude)
+            if longitude != 0 or latitude != 0:
+                data_geo = (tweet_id, longitude, latitude, country, state, county, city)
                 cursor.execute(add_geo, data_geo)
 
-            data_tweet = (tweet_id, tweet_id_str, text, in_reply_to_screen_name, in_reply_to_status_id, in_reply_to_status_id_str, in_reply_to_user_id, in_reply_to_user_id_str, retweet_count, favorite_count, created_at, place_id, user_id)
+            data_tweet = (tweet_id, tweet_id_str, text, in_reply_to_screen_name, in_reply_to_status_id, in_reply_to_status_id_str, in_reply_to_user_id, in_reply_to_user_id_str, retweet_count, favorite_count, created_at, user_id)
             cursor.execute(add_tweet, data_tweet)
         
             if user_id not in unique_users:
-                user_id_str = data["user"]["id_str"]
+                try:
+                    user_id_str = data["user"]["id_str"]
+                except KeyError:
+                    user_id_str = str(user_id)
                 protected = data["user"]["protected"]
                 screen_name = data["user"]["screen_name"]
-                verified = data["user"]["verified"]
+                try:
+                    verified = data["user"]["verified"]
+                except KeyError:
+                    verified = 0
                 statuses_count = data["user"]["statuses_count"]
                 try:
                     description = data["description"]
@@ -118,7 +141,7 @@ for n in range(file_count):
     f.write(str(file_number))
     f.close()
     file_number += 1
-    file_name = "file-" + str(file_number) + ".txt"
+    file_name = "carmen-" + str(file_number) + ".txt"
 
 cnx.commit()
 cursor.close()
